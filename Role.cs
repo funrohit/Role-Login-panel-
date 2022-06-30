@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using Role.db;
-using Role.Models;
+using RollingAuth.db;
+using RollingAuth.Models;
 using System.Diagnostics;
 using System.Security.Claims;
 
-namespace Role.Controllers
+namespace RollingAuth.Controllers
 {
     public class HomeController : Controller
     {
@@ -18,23 +18,28 @@ namespace Role.Controllers
 
 
         [HttpPost]
-        public IActionResult Login(admodel obj, normodel obj2)
+        public IActionResult Login(submitmodel obj)
         {
 
 
-            loggContext database = new loggContext();
+            RollingContext database = new RollingContext();
 
 
             var res = database.Admins.Where(a => a.Name == obj.Name).FirstOrDefault();
 
-
-
+          
             if (res == null)
             {
 
-                var res1 = database.Normals.Where(a => a.Name == obj.Name).FirstOrDefault();
+                var res1 = database.Hrs.Where(a => a.Name == obj.Name).FirstOrDefault();
 
-                if (res1.Name == obj2.Name && res1.Pass == obj2.Pass)
+                if (res1 == null)
+                {
+                    ViewBag.data = "Plz Enter Correct password and UserName!";
+                    return View("Login");
+                }
+
+                else if(res1.Name == obj.Name && res1.Pass == obj.Pass)
                 {
 
                     var claims = new[] { new Claim(ClaimTypes.Name, res1.Name) };
@@ -50,9 +55,10 @@ namespace Role.Controllers
                      new ClaimsPrincipal(identity),
                    authProperties);
 
-                    return RedirectToAction("B", "Home");
+                    return RedirectToAction("HR", "Home");
 
                 }
+            
             }
             else
             {
@@ -72,7 +78,7 @@ namespace Role.Controllers
                      new ClaimsPrincipal(identity),
                    authProperties);
 
-                    return RedirectToAction("A", "Home");
+                    return RedirectToAction("Admin", "Home");
                 }
 
                 return View("Login");
@@ -80,21 +86,15 @@ namespace Role.Controllers
             return View("Login");
         }
 
-            public IActionResult Admin()
-            {
-                return View();
-            }
+        public IActionResult Admin()
+        {
+            return View();
+        }
 
-            public IActionResult A()
-            {
-                return View();
-            }
+        public IActionResult HR()
+        {
+            return View();
+        }
 
-            public IActionResult B()
-            {
-                return View();
-            }
-
-        
     }
 }
