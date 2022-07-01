@@ -98,3 +98,106 @@ namespace RollingAuth.Controllers
 
     }
 }
+
+
+=======================================================================================================================================
+
+More---------------------------------
+    
+    
+    
+    
+    using Microsoft.AspNetCore.Mvc;
+using Rolling1Table.db;
+using Rolling1Table.Models;
+using System.Diagnostics;
+
+namespace Rolling1Table.Controllers
+{
+    public class HomeController : Controller
+    {
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+
+
+        [HttpPost]
+        public IActionResult Login(mymodel obj)
+        {
+            RollitContext database = new RollitContext();
+
+            if (obj.Roll == "HR")
+            {
+                var res = database.Alldata.Where(n=>n.Name == obj.Name).FirstOrDefault();
+
+                if (res == null)
+                {
+                    ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                }
+                else if(res.Roll == obj.Roll  && res.Pass==obj.Pass)
+                {
+
+                    return View("V","Home");
+                }
+
+                ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                return View("Login");
+
+            }
+
+            if(obj.Roll == "ADMIN")
+            {
+                var res = database.Alldata.Where(n => n.Name == obj.Name).FirstOrDefault();
+
+                if (res == null)
+                {
+                    ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                }
+                else if (res.Roll == obj.Roll && res.Pass == obj.Pass)
+                {
+                    return View("AD", "Home");
+                }
+
+                ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                return View("Login");
+            }
+
+            if (obj.Roll == "MANAGER")
+            {
+                var res = database.Alldata.Where(n => n.Name == obj.Name).FirstOrDefault();
+
+                if (res == null)
+                {
+                    ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                }
+                else if (res.Roll == obj.Roll && res.Pass==obj.Pass)
+                {
+                    return View("MAN", "Home");
+                }
+
+                ViewBag.inv = "Make Sure Your UserName,Password And Role Should Be Correct !";
+                return View("Login");
+            }          
+
+            return View();
+        }
+
+        public IActionResult V()
+        {
+            return View();
+        }
+
+        public IActionResult AD()
+        {
+            return View();
+        }
+
+        public IActionResult MAN()
+        {
+            return View();
+        }
+    }
+}
