@@ -201,3 +201,71 @@ namespace Rolling1Table.Controllers
         }
     }
 }
+
+
+
+========================================================================== OTHER STUFF WITH ROLE+++++++++++++++++++++++++++++++
+    
+    using Microsoft.AspNetCore.Mvc;
+using Rolling1Table.db;
+using Rolling1Table.Models;
+using System.Diagnostics;
+
+namespace Rolling1Table.Controllers
+{
+    public class HomeController : Controller
+    {
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Login(mymodel obj)
+        {
+            RollitContext database = new RollitContext();
+
+            var res = database.Alldata.Where(n=>n.Name == obj.Name).FirstOrDefault();
+
+            if (res == null)
+            {
+                @ViewBag.inv = "Make Sure Enter The Right UserName And Password!";
+            }
+            else if(res.Roll=="HR" && res.Name==obj.Name && res.Pass==obj.Pass)
+            {
+              
+               return View("V");
+            }
+            else if (res.Roll == "MANAGER" && res.Name == obj.Name && res.Pass == obj.Pass)
+            {
+              
+                return View("MAN");
+            }
+            else if (res.Roll == "ADMIN" && res.Name == obj.Name && res.Pass == obj.Pass)
+            {
+                
+                return View("AD");
+            }
+            @ViewBag.inv = "Make Sure Enter The Right UserName And Password!";
+
+            return View();
+        }
+
+        //==============view only=====================//
+        public IActionResult V()
+        {
+            return View();
+        }
+
+        public IActionResult AD()
+        {
+            return View();
+        }
+
+        public IActionResult MAN()
+        {
+            return View();
+        }
+    }
+}
